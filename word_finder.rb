@@ -20,10 +20,9 @@ end
 
 # Returns true if and only if:
 # 1. There is exactly one argument
-# 2.
 # Returns false otherwise
 
-def valid_args?(args)
+def valid_num_args?(args)
   args.count == 1
 rescue StandardError
   false
@@ -34,11 +33,10 @@ end
 # If arguments are valid, create a new game using *seed* and *num_players* arguments, and play the game
 # Otherwise, show proper usage message and exit program
 
-show_usage_and_exit unless valid_args?(ARGV)
+show_usage_and_exit unless valid_num_args?(ARGV)
 show_usage_and_exit unless File.file?(ARGV[0])
-graph = read_file(ARGV[0])
-under_development(ARGV[0])
-# puts 'Longest valid word(s):'
+find_words(ARGV[0])
+
 
 
 

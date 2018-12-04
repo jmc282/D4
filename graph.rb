@@ -2,10 +2,10 @@
 class Vertex
   attr_accessor :id, :neighbors, :data
 
-  def initialize(id, data)
+  def initialize(id, data, neighbors)
     @id = id
     @data = data
-    @neighbors = []
+    @neighbors = neighbors
   end
 end
 
@@ -17,8 +17,8 @@ class Graph
     @vertices = []
   end
 
-  def add_vertex(id, data)
-    @vertices << Vertex.new(id, data)
+  def add_vertex(id, data, neighbors)
+    @vertices << Vertex.new(id, data, neighbors)
   end
 
   def find_vertex_by_id(id)
@@ -45,102 +45,71 @@ class Graph
 
   def edges
     edges = []
-
-    vertices.each { |x|
-      puts "#{x.id}, #{x.neighbors}"
-      # if x.neighbors
-      # 	neighbors = x.neighbors
-      # 	neighbors.each { |id|
-      		
-      # 		n = find_vertex_by_id(id)
-      # 		edges << [x.id, n.id]
-      		
-      # 	}
-
-        x.neighbors.each_with_index { |vertex, index|
-          if vertex
-            n = find_vertex_by_id(index + 1)
-              puts "n.id: #{n.id}"
-              edges << [x.id, n.id]
-          end
-        }
-      # end
-    }
+    vertices.each do |x|
+      if x.neighbors
+        neighbors = x.neighbors
+        neighbors.each do |id|
+          n = find_vertex_by_id(id)
+          edges << [x.id, n.id]
+        end
+      end
+    end
     edges
-
   end
 
   def vertex_edges(vertex_id)
-    toReturn = []
-    edges = edges()
-
-    start = find_vertex_by_id(vertex_id)
-
-
-    edges.each { |e|
-      if e[0] == vertex_id
-        toReturn << [vertex_id, e[1]]
-      end
-    }
-    toReturn
-
-
+    vertex_edges = []
+    all_edges = edges
+    all_edges.each { |e| vertex_edges << [vertex_id, e[1]] if e[0] == vertex_id }
+    vertex_edges
   end
 
   # returns a list of vertices that are terminating (dead ends)
   def ends
-  	ends = []
-  	vertices.each { |x|
-  		if x.neighbors.empty?
-  			ends << x
-  		end
-  	}
-  	ends
+    ends = []
+    vertices.each { |x| ends << x if x.neighbors.empty? }
+    ends
   end
 
-  def has_path(from_id, to_id, letters)
-  	from = find_vertex_by_id(from_id)
+  def path?(from_id, to_id)
+    from = find_vertex_by_id(from_id)
     to = find_vertex_by_id(to_id)
     visted = []
+    letters = ''
     return dfs_search(from, to, visted, letters)
   end
 
   def dfs_search(source, destination, visted, letters)
-  	if visted.include? source.id
-  		return false
-  	end
+    return false if visted.include? source.id
 
-  	visted << source.id
-  	if source == destination
-  		return true
-  	end
+    visted << source.id
+    if source == destination
+      return true
+    end
 
-  	source.neighbors.each_with_index { |item, index|
-      if item
-      	neighbor = find_vertex_by_id(index + 1)
-      	if dfs_search(neighbor, destination, visted, letters)
-      		letters << neighbor.data
-      		return true, letters
-      	end
+    source.neighbors.each do |id|
+      neighbor = find_vertex_by_id(id)
+      if dfs_search(neighbor, destination, visted, letters)
+        letters << neighbor.data
+        return true, letters
       end
-  	}
-
-  	return false
+    end
+    false
   end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  def paths
+  	end_verts = ends
+    paths = []
+    vertices.each do |v|
+      end_verts.each do |e|
+        x = path?(v.id, e.id)
+        if x.is_a?(Array)
+          x[1] << v.data
+         paths << x[1]
+        end
+      end
+    end
+    end_verts.each { |e| paths << e.data }
+    paths
+  end
 end
