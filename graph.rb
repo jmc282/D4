@@ -18,7 +18,7 @@ class Graph
   end
 
   def add_vertex(id, data, neighbors)
-    @vertices << Vertex.new(id, data, neighbors)
+    @vertices << Vertex.new(id, data, neighbors) unless find_vertex_by_id(id)
   end
 
   def find_vertex_by_id(id)
@@ -26,21 +26,6 @@ class Graph
       return v if v.id == id
     end
     nil
-  end
-
-  def find_vertex_by_data(data)
-    vertices.each do |v|
-      return v if v.data == data
-    end
-    nil
-  end
-
-  def count
-    vertices.length
-  end
-
-  def add_edge(from, to)
-    vertices[from - 1].neighbors[to - 1] = true
   end
 
   def edges
@@ -83,9 +68,7 @@ class Graph
     return false if visted.include? source.id
 
     visted << source.id
-    if source == destination
-      return true
-    end
+    return true if source == destination
 
     source.neighbors.each do |id|
       neighbor = find_vertex_by_id(id)
@@ -98,14 +81,14 @@ class Graph
   end
 
   def paths
-  	end_verts = ends
+    end_verts = ends
     paths = []
     vertices.each do |v|
       end_verts.each do |e|
         x = path?(v.id, e.id)
         if x.is_a?(Array)
           x[1] << v.data
-         paths << x[1]
+          paths << x[1]
         end
       end
     end

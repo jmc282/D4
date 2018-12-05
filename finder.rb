@@ -8,20 +8,20 @@ class String
 end
 
 # Returns a directed graph for the specified file
-def read_file(filename)
-  graph = Graph.new
+def read_file(filename, graph)
   File.foreach(filename) do |x|
-    id, data, neighbors = process_line(x.chomp("\n").split(';'))
+    id, data, neighbors = process_line(x)
     graph.add_vertex(id, data, neighbors)
   end
   graph
 end
 
 def process_line(line)
-  id = line[0].to_i
-  data = line[1]
-  if line[2]
-    neighbors = line[2].split(',')
+  x = line.chomp("\n").split(';')
+  id = x[0].to_i
+  data = x[1]
+  if x[2]
+    neighbors = x[2].split(',')
     neighbors = neighbors.map(&:to_i)
   else
     neighbors = []
@@ -47,24 +47,24 @@ def real_words(permutations, wordlist)
   realwords
 end
 
-def longest_words(realwords)
+def longest_words(realwords, longest)
   longest_words = []
-  longest = realwords[0].length
   realwords.each { |word| longest_words << word if word.length == longest }
   longest_words
 end
 
+def longest_length(realwords)
+  realwords = realwords.sort_by(&:length).reverse
+  realwords[0].length
+end
+
 def find_words(filename)
   puts 'Longest valid word(s):'
-  graph = read_file(filename)
-  edges = graph.edges
-  ends = graph.ends
-  # print edges
+  graph = Graph.new
+  graph = read_file(filename, graph)
   paths = graph.paths
-  # puts paths
-  vertices = graph.vertices
   permutations = permutations(paths)
   wordlist = wordlist('wordlist.txt')
   realwords = real_words(permutations, wordlist)
-  puts longest_words(realwords)
+  puts longest_words(realwords, longest_length(realwords))
 end
