@@ -1,3 +1,4 @@
+require 'set'
 require_relative 'graph.rb'
 
 # Addition to the string class to get all permutations of a string
@@ -47,6 +48,7 @@ end
 # Returns an array of all words that are in both permutations and wordlist
 def real_words(permutations, wordlist)
   realwords = []
+  wordlist = wordlist.to_set
   permutations.each { |x| realwords << x if wordlist.include?(x) }
   realwords
 end
@@ -58,7 +60,7 @@ def longest_words(realwords, longest)
   longest_words
 end
 
-# Returns the length of the longest word in realwords
+# Returns the length of the longest word in an array
 def longest_length(realwords)
   realwords = realwords.sort_by(&:length).reverse
   realwords[0].length
