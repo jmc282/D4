@@ -81,6 +81,7 @@ class FinderTest < Minitest::Test
   def test_find_words
     filename = 'testfile.txt'
     mock_file(filename, "1;C;2, 3\r\n2;A;3, 4, 6\r\n3;K;5\r\n4;T;\r\n5;E;\r\n6;B;\r\n")
-    assert_output("Longest valid word(s):\ncake\n") { find_words(filename) }
+    longest_words = find_words(filename)
+    assert_equal(['cake'], longest_words)
   end
 end

@@ -74,6 +74,10 @@ def find_words(filename)
   permutations = permutations(paths)
   wordlist = wordlist('wordlist.txt')
   realwords = real_words(permutations, wordlist)
-  puts 'Longest valid word(s):'
-  puts longest_words(realwords, longest_length(realwords))
+  puts 'All Strings:'
+  print paths
+  puts "\nAll Real Strings:"
+  print realwords
+  puts "\nLongest valid word(s):"
+  return longest_words(realwords, longest_length(realwords))
 end
