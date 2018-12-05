@@ -36,16 +36,3 @@ end
 show_usage_and_exit unless valid_num_args?(ARGV)
 show_usage_and_exit unless File.file?(ARGV[0])
 find_words(ARGV[0])
-
-
-
-
-
-
-
-
-
-
-
-
-

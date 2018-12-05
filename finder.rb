@@ -1,6 +1,6 @@
 require_relative 'graph.rb'
 
-# Needs documentation
+# Addition to the string class to get all permutations of a string
 class String
   def all_permutations
     chars.to_a.permutation.map(&:join)
@@ -16,6 +16,7 @@ def read_file(filename, graph)
   graph
 end
 
+# Returns the processed data from each line, ready to be turned into a vertex.
 def process_line(line)
   x = line.chomp("\n").split(';')
   id = x[0].to_i
@@ -29,42 +30,48 @@ def process_line(line)
   [id, data, neighbors]
 end
 
+# Returns an array of strings representing all permutations of paths in the graph.
 def permutations(paths)
   permutations = paths.map(&:downcase).map(&:all_permutations)
   permutations = permutations.flatten.sort_by(&:length).reverse
   permutations
 end
 
+# Returns an array representation of the wordlist
 def wordlist(filename)
   wordlist = []
   File.foreach(filename) { |x| wordlist << x.delete!("\r\n") }
   wordlist
 end
 
+# Returns an array of all words that are in both permutations and wordlist
 def real_words(permutations, wordlist)
   realwords = []
   permutations.each { |x| realwords << x if wordlist.include?(x) }
   realwords
 end
 
+# Returns all words of the longest length in realwords
 def longest_words(realwords, longest)
   longest_words = []
   realwords.each { |word| longest_words << word if word.length == longest }
   longest_words
 end
 
+# Returns the length of the longest word in realwords
 def longest_length(realwords)
   realwords = realwords.sort_by(&:length).reverse
   realwords[0].length
 end
 
+# Main function to find the longest valid words in the graph
 def find_words(filename)
-  puts 'Longest valid word(s):'
   graph = Graph.new
   graph = read_file(filename, graph)
   paths = graph.paths
   permutations = permutations(paths)
   wordlist = wordlist('wordlist.txt')
   realwords = real_words(permutations, wordlist)
+  puts 'Longest valid word(s):'
   puts longest_words(realwords, longest_length(realwords))
 end

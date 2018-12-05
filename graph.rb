@@ -1,4 +1,4 @@
-# Needs documentation
+# Vertex class
 class Vertex
   attr_accessor :id, :neighbors, :data
 
@@ -9,7 +9,7 @@ class Vertex
   end
 end
 
-# Needs documentation
+# Graph class
 class Graph
   attr_accessor :vertices
 
@@ -17,10 +17,12 @@ class Graph
     @vertices = []
   end
 
+  # Creates a new vertex from id, data, and neighbors and adds the vertex to the graph.
   def add_vertex(id, data, neighbors)
     @vertices << Vertex.new(id, data, neighbors) unless find_vertex_by_id(id)
   end
 
+  # Returns the vertex object given an id. Returns nil if nonexistent.
   def find_vertex_by_id(id)
     vertices.each do |v|
       return v if v.id == id
@@ -28,6 +30,7 @@ class Graph
     nil
   end
 
+  # Returns a list of all edges in the graph.
   def edges
     edges = []
     vertices.each do |x|
@@ -42,6 +45,7 @@ class Graph
     edges
   end
 
+  # Returns a list of edges originating from the given vertex.
   def vertex_edges(vertex_id)
     vertex_edges = []
     all_edges = edges
@@ -49,13 +53,14 @@ class Graph
     vertex_edges
   end
 
-  # returns a list of vertices that are terminating (dead ends)
+  # Returns a list of vertices that are terminating (dead ends).
   def ends
     ends = []
     vertices.each { |x| ends << x if x.neighbors.empty? }
     ends
   end
 
+  # Calls dfs_search to return a string representing the path from one vertex to another.
   def path?(from_id, to_id)
     from = find_vertex_by_id(from_id)
     to = find_vertex_by_id(to_id)
@@ -64,6 +69,8 @@ class Graph
     return dfs_search(from, to, visted, letters)
   end
 
+  # A recursive depth first search that returns whether there is a path between source and destination.
+  # If there is a path, returns a string, letters, representing that path
   def dfs_search(source, destination, visted, letters)
     return false if visted.include? source.id
 
@@ -80,6 +87,7 @@ class Graph
     false
   end
 
+  # Returns all paths in the graph as an array of strings.
   def paths
     end_verts = ends
     paths = []
